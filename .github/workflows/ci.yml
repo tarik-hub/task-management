@@ -19,7 +19,7 @@ jobs:
           java-version: '11'
 
       - name: Build and Test Spring Boot Backend
-        run: ./mvn clean install
+        run: ./mvnw clean install
 
       - name: Set up Node.js
         uses: actions/setup-node@v1
