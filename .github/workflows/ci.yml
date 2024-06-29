@@ -30,7 +30,7 @@ jobs:
           node-version: '14'
 
       - name: Install dependencies and build React Frontend
-        run:
+        run: |
           cd frontend
           npm install
           npm run build
