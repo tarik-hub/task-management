@@ -13,9 +13,11 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    private String Description;
+    
     private LocalDate dueDate;
     private String status;
-    
+
     public Long getId() {
         return id;
     }
@@ -27,6 +29,13 @@ public class Task {
     }
     public void setTitle(String title) {
         this.title = title;
+    }
+    
+    public String getDescription() {
+        return Description;
+    }
+    public void setDescription(String description) {
+        Description = description;
     }
     public LocalDate getDueDate() {
         return dueDate;
