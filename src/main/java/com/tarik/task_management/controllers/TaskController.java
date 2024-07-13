@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tarik.task_management.exceptions.TaskNotFoundException;
 import com.tarik.task_management.models.Task;
-import com.tarik.task_management.services.TaskService;
+import com.tarik.task_management.services.TaskServiceImpl;
 
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-    private final TaskService taskService;
+    private final TaskServiceImpl taskService;
 
     @Autowired
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskServiceImpl taskService) {
         this.taskService = taskService;
     }
 

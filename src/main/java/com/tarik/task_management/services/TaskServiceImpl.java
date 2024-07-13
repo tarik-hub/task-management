@@ -8,13 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.tarik.task_management.models.Task;
 import com.tarik.task_management.repositories.TaskRepository;
+import com.tarik.task_management.services.interfaces.TaskService;
 
 @Service
-public class TaskService {
+public class TaskServiceImpl implements TaskService{
     private final TaskRepository taskRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository){
+    public TaskServiceImpl(TaskRepository taskRepository){
         this.taskRepository = taskRepository;
     }
 
