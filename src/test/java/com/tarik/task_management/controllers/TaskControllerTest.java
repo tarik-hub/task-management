@@ -7,6 +7,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.Matchers.is;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tarik.task_management.models.Task;
@@ -33,14 +38,14 @@ public class TaskControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-
+    @Test
     public void testCreateTask() throws Exception {
         Task task = new Task();
         task.setTitle("Test Task");
 
         when(taskService.createTask(any(Task.class))).thenReturn(task);
 
-        mockMvc.perform(post("/tasks")
+        mockMvc.perform(post("/api/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(task)))
                 .andExpect(status().isOk())
@@ -48,4 +53,16 @@ public class TaskControllerTest {
 
         verify(taskService, times(1)).createTask(any(Task.class));
     }
+
+    @Test
+    public void testCreateTaskValidation() throws Exception {
+        String invalidTaskJson = "{\"title\":\"\"}"; // Empty title
+
+        mockMvc.perform(post("/api/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(invalidTaskJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title", is("Title is mandatory")));
+    }
+
 }

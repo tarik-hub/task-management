@@ -2,6 +2,7 @@ package com.tarik.task_management.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,21 +13,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tarik.task_management.exceptions.TaskNotFoundException;
 import com.tarik.task_management.models.Task;
-import com.tarik.task_management.services.TaskServiceImpl;
+import com.tarik.task_management.services.interfaces.TaskService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/tasks")
+@Validated
 public class TaskController {
 
-    private final TaskServiceImpl taskService;
+    private final TaskService taskService;
 
     @Autowired
-    public TaskController(TaskServiceImpl taskService) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
-    @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task){
+   @PostMapping
+    public ResponseEntity<?> createTask(@Valid @RequestBody Task task) {
         Task createdTask = taskService.createTask(task);
         return ResponseEntity.ok(createdTask);
     }
