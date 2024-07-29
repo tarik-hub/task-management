@@ -28,13 +28,13 @@ jobs:
         run: ./mvnw clean install
         id: build-backend
 
-# - name: Set up Node.js
-#   uses: actions/setup-node@v1
-#   with:
-#     node-version: '14'
-#
-# - name: Install dependencies and build React Frontend
-#   run: |
-#     cd frontend
-#     npm install
-#     npm run build
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      
+      - name: Install dependencies and build React Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
