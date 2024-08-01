@@ -38,3 +38,9 @@ jobs:
           cd frontend
           npm install
           npm run build
+
+      - name: Build Docker Images
+        run: |
+          docker build -t my-backend-image:latest -f Dockerfile.backend .
+          docker build -t my-frontend-image:latest -f Dockerfile.frontend .
+
