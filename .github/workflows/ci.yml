@@ -44,3 +44,19 @@ jobs:
           docker build -t my-backend-image:latest -f Dockerfile.backend .
           docker build -t my-frontend-image:latest -f Dockerfile.frontend .
 
+      - name: Set up SSH key
+        run: |
+          echo "$EC2_KEYPAIR" | base64 --decode > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Add EC2 host to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ec2-18-227-140-222.us-east-2.compute.amazonaws.com >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@ec2-18-227-140-222.us-east-2.compute.amazonaws.com 'cd /task_management && docker-compose up -d'
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+
