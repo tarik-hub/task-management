@@ -21,7 +21,7 @@ const CreateTask = () => {
       await createTask(task);
       alert('Task created successfully !');
     } catch (error) {
-      alert('Error : Can't create task');
+      alert('--- Error : Can't create task');
     }
   };
 
