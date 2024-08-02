@@ -1,5 +1,5 @@
 # Use an official Node.js image to build the project
-FROM node:14 AS build
+FROM node:20 AS build
 
 # Set the working directory
 WORKDIR /app
