@@ -40,7 +40,7 @@ jobs:
           npm run build
 
       - name: Build Docker Images
-        run: docker-compose -f ./task-management/docker-compose.yml build
+        run: docker-compose -f docker-compose.yml build
 
       - name: Set up SSH key
         run: |
