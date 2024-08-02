@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -40,9 +40,7 @@ jobs:
           npm run build
 
       - name: Build Docker Images
-        run: |
-          docker build -t my-backend-image:latest -f Dockerfile.backend .
-          docker build -t my-frontend-image:latest -f Dockerfile.frontend .
+        run: docker-compose -f ./task-management/docker-compose.yml build
 
       - name: Set up SSH key
         run: |
