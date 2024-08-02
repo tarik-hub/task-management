@@ -28,6 +28,7 @@ jobs:
         run: ./mvnw clean install
         id: build-backend
 
+<<<<<<< HEAD
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
@@ -58,3 +59,15 @@ jobs:
         env:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
 
+=======
+# - name: Set up Node.js
+#   uses: actions/setup-node@v1
+#   with:
+#     node-version: '14'
+#
+# - name: Install dependencies and build React Frontend
+#   run: |
+#     cd frontend
+#     npm install
+#     npm run build
+>>>>>>> f9f9793f26a523bdc33cf2164d8bbdce28d38841
