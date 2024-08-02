@@ -5,13 +5,13 @@ FROM node:14 AS build
 WORKDIR /app
 
 # Copy the package.json and package-lock.json
-COPY frontend/package.json frontend/package-lock.json ./
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy the rest of the frontend code
-COPY frontend ./frontend
+COPY . .
 
 # Build the React application
 RUN npm run build
@@ -20,7 +20,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Copy the built files from the build stage
-COPY --from=build /app/frontend/build /usr/share/nginx/html
+COPY --from=build /app/build /usr/share/nginx/html
 
 # Expose port 80
 EXPOSE 80
