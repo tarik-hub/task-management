@@ -49,7 +49,7 @@ jobs:
 
       - name: Set up SSH key
         run: |
-          echo "$EC2_KEYPAIR" | base64 --decode > ~/.ssh/id_rsa
+          echo "$EC2_KEYPAIR" | base64 --decode | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
       - name: Add SSH key to ssh-agent
