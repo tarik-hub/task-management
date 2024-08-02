@@ -44,13 +44,21 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
-      - name: Build Docker Images
-        run: docker-compose -f docker-compose.yml build
+      - name: Create .ssh directory
+        run: mkdir -p ~/.ssh
 
       - name: Set up SSH key
         run: |
           echo "$EC2_KEYPAIR" | base64 --decode > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+
+      - name: Add SSH key to ssh-agent
+        run: |
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+
+      - name: Build Docker Images
+        run: docker-compose -f docker-compose.yml build
 
       - name: Add EC2 host to known hosts
         run: |
