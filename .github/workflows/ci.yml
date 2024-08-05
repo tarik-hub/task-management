@@ -9,8 +9,11 @@ on:
       - develop
 
 jobs:
-  test-network:
+  build:
     runs-on: ubuntu-latest
+
+    env:
+      ACTIONS_RUNNER_DEBUG: true
 
     steps:
       - name: Checkout repository
@@ -22,3 +25,18 @@ jobs:
           ping -c 4 ec2-3-138-134-13.us-east-2.compute.amazonaws.com
           curl -I http://ec2-3-138-134-13.us-east-2.compute.amazonaws.com
           nc -zv ec2-3-138-134-13.us-east-2.compute.amazonaws.com 22
+
+      - name: Create .ssh directory
+        run: mkdir -p ~/.ssh
+
+      - name: Create SSH key file
+        run: |
+          echo "${{ secrets.EC2_KEYPAIR }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ls -la ~/.ssh
+
+      - name: Test SSH Connection
+        run: |
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@ec2-3-138-134-13.us-east-2.compute.amazonaws.com "echo 'SSH Connection Successful'"
