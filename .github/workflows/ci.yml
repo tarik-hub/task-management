@@ -60,6 +60,18 @@ jobs:
       - name: Build Docker Images
         run: docker-compose -f docker-compose.yml build
 
+      - name: Save Docker Images as tar files
+        run: |
+          docker save -o backend.tar your-backend-image-name
+          docker save -o frontend.tar your-frontend-image-name
+
+      - name: Upload Docker Images to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa backend.tar ec2-user@ec2-3-138-134-13.us-east-2.compute.amazonaws.com:/home/ec2-user/
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa frontend.tar ec2-user@ec2-3-138-134-13.us-east-2.compute.amazonaws.com:/home/ec2-user/
+        env:
+          EC2_KEYPAIR: ${{ secrets.EC2_KEYPAIR }}
+
       - name: Add EC2 host to known hosts
         run: |
           mkdir -p ~/.ssh
@@ -67,6 +79,9 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@ec2-3-139-85-36.us-east-2.compute.amazonaws.com 'docker-compose -f docker-compose.yml up --build -d'
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@ec2-3-138-134-13.us-east-2.compute.amazonaws.com '
+          docker load -i /home/ec2-user/backend.tar &&
+          docker load -i /home/ec2-user/frontend.tar &&
+          docker-compose -f /home/ec2-user/task-management/docker-compose.yml up --build -d'
         env:
           EC2_KEYPAIR: ${{ secrets.EC2_KEYPAIR }}
