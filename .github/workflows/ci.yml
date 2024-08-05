@@ -9,79 +9,16 @@ on:
       - develop
 
 jobs:
-  build:
+  test-network:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: '17'
-
-      - name: Grant execute permission for Maven Wrapper
-        run: chmod +x ./mvnw
-
-      - name: Build and Test Spring Boot Backend
-        run: ./mvnw clean install
-        id: build-backend
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14'
-      
-      - name: Install dependencies and build React Frontend
+      - name: Test Network Connectivity
         run: |
-          cd frontend
-          npm install
-          npm run build
-
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-
-      - name: Create .ssh directory
-        run: mkdir -p ~/.ssh
-
-      - name: Create SSH key file
-        run: |
-          echo "${{ secrets.EC2_KEYPAIR }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      - name: Add SSH key to ssh-agent
-        run: |
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/id_rsa
-
-      - name: Build Docker Images
-        run: docker-compose -f docker-compose.yml build
-
-      - name: Save Docker Images as tar files
-        run: |
-          docker save -o backend.tar backend
-          docker save -o frontend.tar frontend
-
-      - name: Upload Docker Images to EC2
-        run: |
-          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa backend.tar ec2-user@ec2-3-138-134-13.us-east-2.compute.amazonaws.com:/home/ec2-user/
-          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa frontend.tar ec2-user@ec2-3-138-134-13.us-east-2.compute.amazonaws.com:/home/ec2-user/
-        env:
-          EC2_KEYPAIR: ${{ secrets.EC2_KEYPAIR }}
-
-      - name: Add EC2 host to known hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H ec2-3-139-85-36.us-east-2.compute.amazonaws.com >> ~/.ssh/known_hosts
-
-      - name: Deploy to EC2
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@ec2-3-138-134-13.us-east-2.compute.amazonaws.com '
-          docker load -i /home/ec2-user/backend.tar &&
-          docker load -i /home/ec2-user/frontend.tar &&
-          docker-compose -f /home/ec2-user/task-management/docker-compose.yml up --build -d'
-        env:
-          EC2_KEYPAIR: ${{ secrets.EC2_KEYPAIR }}
+          echo "Testing network connectivity to EC2 instance"
+          ping -c 4 ec2-3-138-134-13.us-east-2.compute.amazonaws.com
+          curl -I http://ec2-3-138-134-13.us-east-2.compute.amazonaws.com
+          nc -zv ec2-3-138-134-13.us-east-2.compute.amazonaws.com 22
