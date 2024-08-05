@@ -62,8 +62,8 @@ jobs:
 
       - name: Save Docker Images as tar files
         run: |
-          docker save -o backend.tar your-backend-image-name
-          docker save -o frontend.tar your-frontend-image-name
+          docker save -o backend.tar backend
+          docker save -o frontend.tar frontend
 
       - name: Upload Docker Images to EC2
         run: |
