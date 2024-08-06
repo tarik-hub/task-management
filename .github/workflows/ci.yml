@@ -74,4 +74,4 @@ jobs:
           ssh -o StrictHostKeyChecking=no ec2-user@ec2-3-138-134-13.us-east-2.compute.amazonaws.com '
           docker load -i /home/ec2-user/backend.tar &&
           docker load -i /home/ec2-user/frontend.tar &&
-          docker-compose -f /home/ec2-user/docker-compose.yml up --build -d'
+          docker-compose -f /home/ec2-user/docker-compose.yml up -d'
